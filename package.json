@@ -1,19 +1,21 @@
 {
   "name": "maniera",
   "version": "1.0.0",
-  "description": "\"A platform that connect fashion designers with customers\"",
+  "description": "\"A cross-platform application that connects fashion designers and clients.\"",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon \"./src/index.js\"",
-    "lint": "eslint --fix \"./src/index.js\"",
-    "format": "prettier -w ."
+    "lint": "eslint src/**/*.js",
+    "format": "eslint src/**/*.js --fix",
+    "prettier-format": "prettier -w ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^10.0.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.12.14"
   },
   "devDependencies": {
     "eslint": "^7.28.0",
