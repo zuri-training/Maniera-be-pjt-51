@@ -2,8 +2,8 @@
 
 A cross-platform application that connects fashion designers and clients.
 
-The app is deployed [here](https://maniera.herokuapp.com/) on heroku
-[Heroku deployment link](https://maniera.herokuapp.com/)
+The app is deployed [here](https://maniera-dev.herokuapp.com/) on heroku
+[Heroku deployment link](https://maniera-dev.herokuapp.com/)
 
 ## Run Locally
 
