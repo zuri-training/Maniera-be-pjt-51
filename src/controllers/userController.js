@@ -1,6 +1,7 @@
-const User = require("../models/User");
+/* eslint-disable no-underscore-dangle */
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 require("dotenv").config();
 
 const { TOKEN_SECRET, TOKEN_EXPIRY } = process.env;
@@ -32,7 +33,7 @@ exports.signupController = async (req, res) => {
     newUser.password = hash;
 
     await newUser.save();
-    return res.status(200).json({ success: "Registeration success. Please sigin" });
+    return res.status(200).json({ success: "Registration success. Please signin" });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
