@@ -1,10 +1,15 @@
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable func-names */
+/* eslint-disable no-console */
+/* eslint-disable consistent-return */
 const bcrypt = require("bcryptjs");
+const _ = require("lodash");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const mailgun = require("mailgun-js");
 require("dotenv").config();
+const User = require("../models/User");
 
-const { TOKEN_SECRET, TOKEN_EXPIRY } = process.env;
+const { TOKEN_SECRET, TOKEN_EXPIRY, MAILGUN_APIKEY, DOMAIN } = process.env;
+const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
 
 /**
  * @method POST
@@ -33,7 +38,7 @@ exports.signupController = async (req, res) => {
     newUser.password = hash;
 
     await newUser.save();
-    return res.status(200).json({ success: "Registration success. Please signin" });
+    return res.status(200).json({ success: "Registeration success. Please sigin" });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
@@ -67,5 +72,83 @@ exports.signinController = async (req, res) => {
     res.status(200).json({ token });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const { resetLink, newPass } = req.body;
+  const obj = {
+    password: newPass,
+    resetLink: "",
+  };
+
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(obj.password, salt);
+  obj.password = hash;
+  try {
+    if (resetLink) {
+      // eslint-disable-next-line func-names
+      jwt.verify(resetLink, process.env.RESET_PASSWORD_KEY, function (error, decodedData) {
+        if (error) return res.status(401).json({ error: "Incorrect token or it is expired." });
+      });
+      let user = await User.findOne({ resetLink }, (err) => {
+        if (err) return res.status(400).json({ error: "User with this token does not exist." });
+      });
+      if (!user) return res.status(400).json({ error: "Incorrect token or it is expired." });
+      user = _.extend(user, obj);
+      // eslint-disable-next-line no-unused-vars
+      user.save((err, result) => {
+        if (err) {
+          return res.status(400).json({ error: "reset password error" });
+          // eslint-disable-next-line no-else-return
+        } else {
+          return res.status(200).json({ message: "Your password has been changed" });
+        }
+      });
+    }
+  } catch (error) {
+    return res.status(401).json({ error: "Authentication error!!!" });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    // eslint-disable-next-line consistent-return
+    const user = User.findOne({ email }, (err) => {
+      if (err || !user) return res.status(400).json({ error: "User with this email does not exist" });
+
+      // eslint-disable-next-line no-underscore-dangle
+      const token = jwt.sign({ _id: user._id }, process.env.RESET_PASSWORD_KEY, { expiresIn: "20m" });
+      const data = {
+        from: "noreply@hello.com",
+        to: email,
+        subject: "Account Activation Link",
+        html: `
+            <a><h2>Please click on the given link to reset your password</h2>
+            <p>${process.env.CLIENT_URL}/resetpassword/${token}</p></a>
+      `,
+      };
+
+      // eslint-disable-next-line no-shadow
+      return user.updateOne({ resetLink: token }, function (err) {
+        if (err) {
+          return res.status(400).json({ error: "reset password link error" });
+          // eslint-disable-next-line no-else-return
+        } else {
+          mg.messages().send(data, function (error) {
+            console.log(error);
+            if (error) {
+              return res.json({
+                error: err.message,
+              });
+            }
+            return res.json({ message: "Email has been sent, kindly follow the instructions" });
+          });
+        }
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Unable to change password" });
   }
 };

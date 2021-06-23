@@ -4,7 +4,8 @@ A cross-platform application that connects fashion designers and clients.
 
 The app is deployed [here](https://maniera-dev.herokuapp.com/) on heroku
 [Heroku deployment link](https://maniera-dev.herokuapp.com/)
-> URL = ```http://localhost:8888```
+
+> URL = `http://localhost:8888`
 
 ## Run Locally
 
@@ -35,8 +36,9 @@ Start the server
 Launch Postman
 
 ```Postman
-  Use the API reference below to test the various endpoints in Postman: 
- ```
+  Use the API reference below to test the various endpoints in Postman:
+```
+
  <p>FORGET PASSWORD [REQUEST TYPE : PUT]</p>
  
 ```PUT``` ```{{ URL }}``` ```/api/auth/forgot-password```
@@ -72,7 +74,6 @@ Launch Postman
 }
 ```
 ```
-
 
 ## API Reference
 
