@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -24,6 +25,10 @@ const UserSchema = new Schema(
       type: "String",
       enum: ["designer", "customer", "admin"],
       default: "customer",
+    },
+    resetLink: {
+      data: String,
+      default: "",
     },
   },
   { timestamps: true },
