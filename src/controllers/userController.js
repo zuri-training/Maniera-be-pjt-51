@@ -16,11 +16,12 @@ const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
  * @desc registers a new user
  */
 exports.signupController = async (req, res) => {
-  const { email, password, firstName, lastName, role } = req.body;
+  const { email, password, firstName, lastName } = req.body;
+  console.log(req.body);
   try {
     // Check if user exists
     const user = await User.findOne({ email });
-    if (user) return res.status(400).json({ error: "Email already exists" });
+    if (user) return res.status(400).json({ error: "Email already exists." });
 
     // create an instance of the user
     const newUser = new User({
@@ -28,7 +29,6 @@ exports.signupController = async (req, res) => {
       password,
       firstName,
       lastName,
-      role,
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -38,8 +38,9 @@ exports.signupController = async (req, res) => {
     newUser.password = hash;
 
     await newUser.save();
-    return res.status(200).json({ success: "Registeration success. Please sigin" });
+    return res.status(200).json({ success: "Registeration success. Please signin." });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Server error" });
   }
 };
