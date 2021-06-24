@@ -26,6 +26,10 @@ const UserSchema = new Schema(
       enum: ["designer", "customer", "admin"],
       default: "customer",
     },
+    resetLink: {
+      data: String,
+      default: "",
+    },
   },
   { timestamps: true },
 );
