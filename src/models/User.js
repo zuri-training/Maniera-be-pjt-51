@@ -20,10 +20,9 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    role: {
-      type: "String",
-      enum: ["designer", "customer", "admin"],
-      default: "customer",
+    seller: {
+      type: mongoose.Types.ObjectId,
+      ref: "Seller",
     },
   },
   { timestamps: true },

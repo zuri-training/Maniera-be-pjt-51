@@ -10,7 +10,8 @@ const { TOKEN_SECRET, TOKEN_EXPIRY } = process.env;
  * @desc registers a new user
  */
 exports.signupController = async (req, res) => {
-  const { email, password, firstName, lastName, role } = req.body;
+  const { email, password, firstName, lastName } = req.body;
+  console.log(req.body);
   try {
     // Check if user exists
     const user = await User.findOne({ email });
@@ -22,7 +23,6 @@ exports.signupController = async (req, res) => {
       password,
       firstName,
       lastName,
-      role,
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -34,6 +34,7 @@ exports.signupController = async (req, res) => {
     await newUser.save();
     return res.status(200).json({ success: "Registeration success. Please sigin" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Server error" });
   }
 };
