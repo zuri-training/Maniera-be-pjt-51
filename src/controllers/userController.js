@@ -32,7 +32,7 @@ exports.signupController = async (req, res) => {
     newUser.password = hash;
 
     await newUser.save();
-    return res.status(200).json({ success: "Registeration success. Please signin" });
+    return res.status(200).json({ success: "Registeration success. Please signin." });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Server error" });
