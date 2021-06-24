@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 /* eslint-disable no-console */
 /* eslint-disable consistent-return */
@@ -16,12 +17,12 @@ const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
  * @desc registers a new user
  */
 exports.signupController = async (req, res) => {
-  const { email, password, firstName, lastName, role } = req.body;
+  const { email, password, confirmPassword, firstName, lastName, role } = req.body;
   try {
     // Check if user exists
     const user = await User.findOne({ email });
     if (user) return res.status(400).json({ error: "Email already exists" });
-
+    if (password !== confirmPassword) res.json(400).json({ error: "Password mismatch" });
     // create an instance of the user
     const newUser = new User({
       email,
@@ -38,7 +39,7 @@ exports.signupController = async (req, res) => {
     newUser.password = hash;
 
     await newUser.save();
-    return res.status(200).json({ success: "Registeration success. Please sigin" });
+    return res.status(200).json({ data: newUser, success: "Registeration success. Please sigin" });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
