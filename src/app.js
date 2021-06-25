@@ -5,7 +5,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./routes/authroute");
-const sellerRoutes = require("./routes/sellerRoute");
+// const sellerRoutes = require("./routes/sellerRoute");
 require("dotenv").config();
 
 const dbSetup = require("./database/setup");
@@ -19,6 +19,6 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
-app.use("/api/auth", sellerRoutes);
+// app.use("/api/auth", sellerRoutes);
 
 module.exports = app;
