@@ -13,11 +13,13 @@ dbSetup();
 const app = express();
 
 // midllewares
+app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", sellerRoutes);
-app.use(cookieParser());
-app.use(cors());
+
 
 module.exports = app;
