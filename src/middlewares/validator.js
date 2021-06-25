@@ -16,6 +16,14 @@ exports.signinValidator = [
   }),
 ];
 
+// seller validator
+exports.sellerValidator = [
+  check("email", "Invalid email").isEmail().normalizeEmail(),
+  check("password", "Password must be at least 6 characters long").isLength({
+    min: 6,
+  }),
+];
+
 exports.validatorResults = (req, res, next) => {
   const result = validationResult(req);
   const hasErrors = !result.isEmpty();
