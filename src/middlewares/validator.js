@@ -5,7 +5,7 @@ exports.signupValidator = [
   check("email", "Invalid email").isEmail().normalizeEmail(),
   check(
     "password",
-    "Password should be combination of one uppercase , one lower case, one special char, one digit and min 8",
+    "Password should be combination of one uppercase , one lower case, one special character, one digit and min 8",
   ).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
 ];
 
