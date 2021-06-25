@@ -5,6 +5,6 @@ const { registerSeller } = require("../controllers/sellerController");
 const { authenticateJWT } = require("../middlewares/jwtAuthentication");
 const { sellerValidator, validatorResults } = require("../middlewares/validator");
 
-router.post("/:userId", sellerValidator, validatorResults, authenticateJWT, registerSeller);
+router.post("/seller/:userId", sellerValidator, validatorResults, authenticateJWT, registerSeller);
 
 module.exports = router;
