@@ -1,7 +1,10 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
+const mongoose = require("mongoose");
 const Seller = require("../models/Seller");
 const User = require("../models/User");
-const mongoose = require("mongoose");
-const ObjectId = mongoose.Types.ObjectId;
+
+const { ObjectId } = mongoose.Types;
 
 /**
  * @method POST

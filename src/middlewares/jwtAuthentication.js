@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -5,7 +6,7 @@ const { TOKEN_SECRET } = process.env;
 
 exports.authenticateJWT = (req, res, next) => {
   // cookies.token gotten from the frontend
-  const token = req.cookies.token;
+  const { token } = req.cookies;
 
   // check the token
   if (!token) return res.status(401).json({ errorMessage: "Authorization denied" });
