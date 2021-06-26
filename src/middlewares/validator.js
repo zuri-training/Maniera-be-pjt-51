@@ -16,9 +16,10 @@ exports.signinValidator = [check("email", "Invalid email").isEmail().normalizeEm
 // seller validator
 exports.sellerValidator = [
   check("email", "Invalid email").isEmail().normalizeEmail(),
-  check("password", "Password must be at least 6 characters long").isLength({
-    min: 6,
-  }),
+  check(
+    "password",
+    "Password should have at least one uppercase , one lowercase, one special character, one digit and minimum of 8",
+  ).matches(/^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/),
 ];
 
 exports.validatorResults = (req, res, next) => {
