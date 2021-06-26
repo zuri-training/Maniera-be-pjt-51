@@ -7,7 +7,7 @@ exports.signupValidator = [
   check(
     "password",
     "Password should have at least one uppercase , one lowercase, one special character, one digit and minimum of 8",
-  ).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
+  ).matches(/^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/),
 ];
 
 // signin validator
