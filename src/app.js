@@ -21,4 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", sellerRoutes);
 
+app.use("/", (req, res) => {
+  res.status(200).json({
+    message: "Welcome to Maniera!",
+  });
+});
+
 module.exports = app;
