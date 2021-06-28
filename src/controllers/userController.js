@@ -17,7 +17,7 @@ const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
  */
 exports.signupController = async (req, res) => {
   const { email, password, firstName, lastName } = req.body;
-  console.log(req.body);
+
   try {
     // Check if user exists
     const user = await User.findOne({ email });

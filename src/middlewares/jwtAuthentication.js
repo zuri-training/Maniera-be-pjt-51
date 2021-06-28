@@ -5,7 +5,9 @@ const { TOKEN_SECRET } = process.env;
 
 exports.authenticateJWT = (req, res, next) => {
   // cookies.token gotten from the frontend
-  const { token } = req.cookies;
+
+  const token = req.cookies.token;
+
 
   // check the token
   if (!token) return res.status(401).json({ errorMessage: "Authorization denied" });

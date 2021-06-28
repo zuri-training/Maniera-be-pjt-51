@@ -25,10 +25,6 @@ const UserSchema = new Schema(
       type: mongoose.Types.ObjectId,
       ref: "Seller",
     },
-    customer: {
-      type: mongoose.Types.ObjectId,
-      ref: "customer",
-    },
     resetLink: {
       data: String,
       default: "",
