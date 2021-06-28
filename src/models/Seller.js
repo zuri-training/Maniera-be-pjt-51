@@ -19,8 +19,8 @@ const SellerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    buisnessName: {
-      type: String,
+    businessNumber: {
+      type: Number,
       required: true,
     },
     address: {
@@ -29,6 +29,10 @@ const SellerSchema = new mongoose.Schema(
     },
     country: {
       type: String,
+      required: true,
+    },
+    buisnessName: {
+      type: Number,
       required: true,
     },
     buisnessScale: {
