@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -20,10 +21,17 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    role: {
-      type: "String",
-      enum: ["designer", "customer", "admin"],
-      default: "customer",
+    seller: {
+      type: mongoose.Types.ObjectId,
+      ref: "Seller",
+    },
+    customer: {
+      type: mongoose.Types.ObjectId,
+      ref: "customer",
+    },
+    resetLink: {
+      data: String,
+      default: "",
     },
   },
   { timestamps: true },
