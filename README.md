@@ -37,41 +37,97 @@ Launch Postman
 ```Postman
   Use the API reference below to test the various endpoints in Postman: 
  ```
- <p>FORGET PASSWORD [REQUEST TYPE : PUT]</p>
+<p>Add item to cart</p>
  
-```PUT``` ```{{ URL }}``` ```/api/auth/forgot-password```
-> If you are using postman set to raw and ```Content-Type: application/json```
-> Sample Request Body
-```sh
-{
-       
-        "email": "sample@email.com"
+Endpoint:  https://maniera-dev.herokuapp.com/api/auth/add-to-cart
+Method: POST
+URL Params: None
+
+Data Params: {
+    
+  productId: "60d8890484d6151e84910250",
+  quantity: 20
+
 }
-```
-> Sample Response
-```sh
+
+Success Response
+   200 status code
 {
-    "message": "Email has been sent, kindly follow the instructions"
+    "type": "success",
+    "mgs": "Process Successful",
+    "data": {
+        "subTotal": 100,
+        "_id": "60d88b8d1d41680388fb15dc",
+        "items": [
+            {
+                "_id": "60dcb0a0b9e8d135aced7b43",
+                "productName": "Shirt",
+                "image": "cloudinarylink",
+                "productId": "60dc7ca9ad47952f08b956fd",
+                "quantity": 10,
+                "price": 10,
+                "total": 100,
+                "createdAt": "2021-06-30T17:57:52.802Z",
+                "updatedAt": "2021-06-30T17:57:52.802Z"
+            }
+        ],
+        "createdAt": "2021-06-27T14:30:37.091Z",
+        "updatedAt": "2021-06-30T17:57:52.803Z",
+        "__v": 14
+    }
 }
-```
-<p>RESET PASSWORD [REQUEST TYPE : PUT]</p>
+Error Response
+     400 Status code
+{
+type: "Invalid",
+msg: "Something Went Wrong",
+}
+    500 Status code
+{
+ type: "Not Found",
+ msg: "Invalid request",
+}
+
+<p>Remove an item from cart</p>
  
-```PUT``` ```{{ URL }}``` ```/api/auth/reset-Password```
-> Sample Request Body
-```sh
+Endpoint:  https://maniera-dev.herokuapp.com/api/auth/removesingleproduct
+Method: POST
+URL Params: None
+
 {
-       
-        "newPass": "newPassword",
-        "resetLink": "linkinemail"
+  "productId": "60dc7c48ad47952f08b956fb"
 }
-```
-> Sample Response
-```sh
+
+Success Response
+   200 status code
 {
-     "message": "Your password has been changed"
+    "type": "Success",
+    "mgs": "product removed",
+    "data": {
+        "subTotal": 1000,
+        "_id": "60d88b8d1d41680388fb15dc",
+        "items": [
+            {Remaining objects in cart}
+        ],
+        "createdAt": "2021-06-27T14:30:37.091Z",
+        "updatedAt": "2021-06-28T13:44:24.805Z",
+        "__v": 9
+    }
 }
-```
-```
+Error Response
+     400 Status code
+{
+type: "Invalid",
+msg: "Bad Request",
+}
+    500 Status code
+{
+ type: "Not Found",
+ msg: "Internal server error",
+}
+
+
+
 
 
 ## API Reference
