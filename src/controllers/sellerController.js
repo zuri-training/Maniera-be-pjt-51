@@ -1,7 +1,10 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
+const mongoose = require("mongoose");
 const Seller = require("../models/Seller");
 const User = require("../models/User");
-const mongoose = require("mongoose");
-const ObjectId = mongoose.Types.ObjectId;
+
+const { ObjectId } = mongoose.Types;
 
 /**
  * @method POST
@@ -26,7 +29,7 @@ exports.registerSeller = async (req, res) => {
     realUser.seller = seller;
     realUser.save();
 
-    res.json({ realUser });
+    res.status(200).json({ realUser, message: "Seller account successfully created" });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }

@@ -1,4 +1,5 @@
 const express = require("express");
+
 const router = express.Router();
 const { registerSeller } = require("../controllers/sellerController");
 const { authenticateJWT } = require("../middlewares/jwtAuthentication");
