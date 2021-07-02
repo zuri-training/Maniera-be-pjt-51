@@ -164,6 +164,10 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
+/**
+ * @method POST
+ * @desc signs in and sign up a user using google account
+ */
 exports.googleSigninController = async (req, res) => {
   try {
     const { token } = req.body;
