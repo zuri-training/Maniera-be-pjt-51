@@ -12,8 +12,6 @@ require("dotenv").config();
 
 const dbSetup = require("./database/setup");
 
-const { FRONTEND_DEV_URL } = process.env;
-
 dbSetup();
 
 // middlewares
