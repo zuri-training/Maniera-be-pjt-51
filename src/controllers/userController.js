@@ -11,7 +11,6 @@ const { TOKEN_SECRET, TOKEN_EXPIRY } = process.env;
  */
 exports.signupController = async (req, res) => {
   const { email, password, firstName, lastName } = req.body;
-  console.log(req.body);
   try {
     // Check if user exists
     const user = await User.findOne({ email });
@@ -58,6 +57,7 @@ exports.signinController = async (req, res) => {
     const payload = {
       user: {
         id: user._id,
+        role: user.seller,
       },
     };
 

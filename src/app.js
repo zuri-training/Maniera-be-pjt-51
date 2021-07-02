@@ -1,6 +1,7 @@
 const express = require("express");
 const authRoutes = require("./routes/authroute");
 const sellerRoutes = require("./routes/sellerRoute");
+const productRoutes = require("./routes/productRoute");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", sellerRoutes);
+app.use("/api/auth", productRoutes);
 app.use(cookieParser());
 app.use(
   cors({
