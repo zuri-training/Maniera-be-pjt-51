@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const RequestSchema = new Schema({
-  fullname: {
+  fullName: {
     type: String,
     required: true,
     lowercase: true,
@@ -40,10 +40,13 @@ const RequestSchema = new Schema({
   description: {
     type: String,
   },
-  imageFile: {
+  imageUrl: {
     type: String,
   },
-  address: {
+  cloudinaryId:{
+    type: String,
+  },
+  houseNumber: {
     type: String,
     required: true,
   },
