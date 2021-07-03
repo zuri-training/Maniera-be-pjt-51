@@ -134,6 +134,7 @@ exports.update = async (req, res) => {
   try {
     const product = await Product.findByid(productId);
 
+    // delete from cloudinary
     await cloudinary.uploader.destroy(product.cloudinary_id);
     const result = await cloudinary.uploader.upload(req.file.path);
 
