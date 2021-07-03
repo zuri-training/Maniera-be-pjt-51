@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -23,6 +24,10 @@ const UserSchema = new Schema(
     seller: {
       type: mongoose.Types.ObjectId,
       ref: "Seller",
+    },
+    resetLink: {
+      data: String,
+      default: "",
     },
   },
   { timestamps: true },
