@@ -1,5 +1,7 @@
 const cloudinary = require("cloudinary").v2;
-require("dotenv").config(); //allows us to use the evnironmental variables in .env
+
+require("dotenv").config(); // allows us to use the evnironmental variables in .env
+
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

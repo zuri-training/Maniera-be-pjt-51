@@ -22,7 +22,7 @@ exports.authenticateJWT = (req, res, next) => {
 
 exports.authenticateProductJWT = (req, res, next) => {
   // cookies.token gotten from the frontend
-  const token = req.cookies.token;
+  const { token } = req.cookies;
 
   // check the token
   if (!token) return res.status(401).json({ errorMessage: "Authorization denied" });

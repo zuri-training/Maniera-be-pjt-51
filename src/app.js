@@ -1,11 +1,15 @@
 const express = require("express");
-const authRoutes = require("./routes/authroute");
-const sellerRoutes = require("./routes/sellerRoute");
-const productRoutes = require("./routes/productRoute");
 const cors = require("cors");
 
 const app = express();
 const cookieParser = require("cookie-parser");
+
+
+const authRoutes = require("./routes/authroute");
+const sellerRoutes = require("./routes/sellerRoute");
+const cartRoute = require("./routes/cartRoute");
+const productRoutes = require("./routes/productRoute");
+
 
 require("dotenv").config();
 
@@ -22,15 +26,15 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", cartRoute);
 app.use("/api/auth", sellerRoutes);
 app.use("/api/auth", productRoutes);
 app.use(cookieParser());
-app.use(
-  cors({
-    //   location of the react app connecting to
-    origin: "http://localhost:3000",
-    credentials: true,
-  }),
-);
+
+app.use("/", (req, res) => {
+  res.status(200).json({
+    message: "Welcome to Maniera!",
+  });
+});
 
 module.exports = app;

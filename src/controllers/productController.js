@@ -25,7 +25,8 @@ exports.create = async (req, res) => {
     const result = await cloudinary.uploader.upload(req.file.path);
     console.log(result);
 
-    let product = new Product({
+    const product = new Product({
+
       productName,
       productDescription,
       productPrice,
@@ -77,7 +78,8 @@ exports.readAll = async (req, res) => {
  * @desc Gets product
  */
 exports.readProduct = async (req, res) => {
-  const productId = req.params.productId;
+  const { productId } = req.params;
+
   try {
     const product = await Product.findOne(productId).populate({ path: "productCategory", model: "category" });
 
@@ -96,7 +98,8 @@ exports.readProduct = async (req, res) => {
  */
 exports.delete = async (req, res) => {
   try {
-    const productId = req.params.productId;
+    const { productId } = req.params;
+
     const product = await Product.findById(productId);
     const deletedProduct = await Product.findByIdAndDelete(productId);
 
@@ -116,7 +119,8 @@ exports.delete = async (req, res) => {
  * @desc updates product
  */
 exports.update = async (req, res) => {
-  const productId = req.params.productId;
+
+  const { productId } = req.params;
 
   const {
     productName,
@@ -132,13 +136,15 @@ exports.update = async (req, res) => {
   } = req.body;
 
   try {
-    const product = await Product.findByid(productId);
+    let product = await Product.findByid(productId);
+
 
     // delete from cloudinary
     await cloudinary.uploader.destroy(product.cloudinary_id);
     const result = await cloudinary.uploader.upload(req.file.path);
 
-    let newProduct = new Product({
+    const newProduct = new Product({
+
       productName,
       productDescription,
       productPrice,
