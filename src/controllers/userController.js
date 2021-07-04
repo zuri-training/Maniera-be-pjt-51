@@ -69,6 +69,7 @@ exports.signinController = async (req, res) => {
     const payload = {
       user: {
         id: user._id,
+        role: user.seller,
       },
     };
 
