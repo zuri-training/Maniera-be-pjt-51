@@ -4,7 +4,8 @@ A cross-platform application that connects fashion designers and clients.
 
 The app is deployed [here](https://maniera-dev.herokuapp.com/) on heroku
 [Heroku deployment link](https://maniera-dev.herokuapp.com/)
-> URL = ```http://localhost:8888```
+
+> URL = `http://localhost:8888`
 
 ## Run Locally
 
@@ -35,9 +36,11 @@ Start the server
 Launch Postman
 
 ```Postman
+
   Use the API reference below to test the various endpoints in Postman: 
  ```
 <h2>Add item to cart</h2>
+
  
  Endpoint:  ```https://maniera-dev.herokuapp.com/api/auth/add-to-cart```
  
@@ -183,11 +186,6 @@ msg: "Something went wrong",
  msg: "Internal server error",
 }
 ```
-
-
-
-
-
 
 ## API Reference
 

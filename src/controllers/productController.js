@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const Product = require("../models/Product");
 const cloudinary = require("../utils/cloudinary");
 
@@ -27,6 +26,7 @@ exports.create = async (req, res) => {
     console.log(result);
 
     const product = new Product({
+
       productName,
       productDescription,
       productPrice,
@@ -79,6 +79,7 @@ exports.readAll = async (req, res) => {
  */
 exports.readProduct = async (req, res) => {
   const { productId } = req.params;
+
   try {
     const product = await Product.findOne(productId).populate({ path: "productCategory", model: "category" });
 
@@ -98,6 +99,7 @@ exports.readProduct = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     const { productId } = req.params;
+
     const product = await Product.findById(productId);
     const deletedProduct = await Product.findByIdAndDelete(productId);
 
@@ -117,6 +119,7 @@ exports.delete = async (req, res) => {
  * @desc updates product
  */
 exports.update = async (req, res) => {
+
   const { productId } = req.params;
 
   const {
@@ -135,11 +138,13 @@ exports.update = async (req, res) => {
   try {
     let product = await Product.findByid(productId);
 
+
     // delete from cloudinary
     await cloudinary.uploader.destroy(product.cloudinary_id);
     const result = await cloudinary.uploader.upload(req.file.path);
 
     const newProduct = new Product({
+
       productName,
       productDescription,
       productPrice,

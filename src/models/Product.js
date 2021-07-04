@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-
+const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema.Types;
 
-const ProductSchema = new mongoose.Schema(
+const productSchema = new Schema(
   {
     productName: {
       type: String,
@@ -55,5 +55,6 @@ const ProductSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const Product = mongoose.model("Product", ProductSchema);
-module.exports = Product;
+
+module.exports = mongoose.model("product", productSchema);
+

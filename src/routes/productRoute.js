@@ -9,6 +9,7 @@ router.post("/product", upload.single("productImage"), authenticateProductJWT, p
 router.get("/products", authenticateProductJWT, product.readAll);
 router.get("/product/:productId", authenticateProductJWT, product.readProduct);
 router.delete("/product/:productId", authenticateProductJWT, product.delete);
+
 router.put("/product/:productId", upload.single("productImage"), authenticateProductJWT, product.update);
 
 module.exports = router;
