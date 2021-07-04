@@ -1,28 +1,33 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 /* eslint-disable no-console */
 /* eslint-disable consistent-return */
 const bcrypt = require("bcryptjs");
 const _ = require("lodash");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 const mailgun = require("mailgun-js");
+const { OAuth2Client } = require("google-auth-library");
+
+require("dotenv").config();
 const User = require("../models/User");
 
-const { TOKEN_SECRET, TOKEN_EXPIRY, MAILGUN_APIKEY, DOMAIN } = process.env;
+const { TOKEN_SECRET, TOKEN_EXPIRY, MAILGUN_APIKEY, DOMAIN, GOOGLE_CLIENT_ID, GOOGLE_AUTH_CLIENT_SECRET } = process.env;
 const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
+
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 /**
  * @method POST
  * @desc registers a new user
  */
 exports.signupController = async (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
-
+  const { email, password, confirmPassword, firstName, lastName } = req.body;
   try {
     // Check if user exists
     const user = await User.findOne({ email });
-    if (user) return res.status(400).json({ error: "Email already exists." });
-
+    if (user) return res.status(400).json({ error: "Email already exists" });
+    if (password !== confirmPassword) res.json(400).json({ error: "Password mismatch" });
     // create an instance of the user
     const newUser = new User({
       email,
@@ -68,9 +73,14 @@ exports.signinController = async (req, res) => {
     };
 
     // create token
-    const token = jwt.sign(payload, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
+    const refresh_token = jwt.sign(payload, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
+    res.cookie("sessionToken", refresh_token, {
+      httpOnly: true,
+      maxAge: 1 * 60 * 50 * 1000,
+      signed: true,
+    });
 
-    res.status(200).json({ token });
+    res.status(200).json({ refresh_token });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
@@ -151,5 +161,57 @@ exports.forgotPassword = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: "Unable to change password" });
+  }
+};
+
+exports.googleSigninController = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { email_verified, email, given_name, family_name } = payload;
+    const password = email + GOOGLE_AUTH_CLIENT_SECRET;
+    const passwordHash = await bcrypt.hash(password, 12);
+    if (!email_verified) return res.status(401).json({ error: "Email verification failed" });
+    const user = await User.findOne({ email });
+    if (user) {
+      const payLoad = {
+        user: {
+          id: user._id,
+        },
+      };
+      // create token
+      const refresh_token = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
+      res.cookie("sessionToken", refresh_token, {
+        httpOnly: true,
+        maxAge: 2 * 24 * 60 * 60 * 1000,
+      });
+      return res.status(200).json({ message: "Login successful" });
+    }
+    const newUser = new User({
+      firstName: given_name,
+      lastName: family_name,
+      email,
+      password: passwordHash,
+    });
+    await newUser.save();
+    const payLoad = {
+      user: {
+        id: newUser._id,
+      },
+    };
+    // create token
+    const refresh_token = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
+    res.cookie("sessionToken", refresh_token, {
+      httpOnly: true,
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+    });
+    res.status(200).json({ message: "Account creation successful, you have been logged in" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
   }
 };

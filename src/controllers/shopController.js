@@ -2,72 +2,9 @@
 /* eslint-disable func-names */
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
-const Product = require("../models/product");
+const Product = require("../models/Product");
 const productRepository = require("../repo/productRepository");
 const { cartRepo, addItem } = require("../repo/cartRepository");
-
-exports.getProducts = async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.status(200).json({
-      status: true,
-      data: products,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      error: err,
-      status: false,
-    });
-  }
-};
-exports.getProductById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const productDetails = await Product.findById(id);
-    res.status(200).json({
-      status: true,
-      data: productDetails,
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: false,
-      error: err,
-    });
-  }
-};
-exports.createProduct = async (req, res) => {
-  try {
-    const product = await Product.create({
-      ...req.body,
-    });
-    res.status(200).json({
-      status: true,
-      data: product,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      error: err,
-      status: false,
-    });
-  }
-};
-exports.removeProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const productDetails = await Product.findByIdAndRemove(id);
-    res.status(200).json({
-      status: true,
-      data: productDetails,
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: false,
-      error: err,
-    });
-  }
-};
 
 exports.addItemToCart = async (req, res) => {
   const { productId } = req.body;
@@ -76,6 +13,7 @@ exports.addItemToCart = async (req, res) => {
     let cart = await cartRepo();
     // console.log(cart.items);
     const productDetails = await productRepository.productById(productId);
+
     if (!productDetails) {
       return res.status(500).json({
         type: "Not Found",
@@ -98,17 +36,20 @@ exports.addItemToCart = async (req, res) => {
       // ----------Check if product exist, just add the previous quantity with the new quantity and update the total price-------
       else if (indexFound !== -1) {
         cart.items[indexFound].quantity += quantity;
-        cart.items[indexFound].total = cart.items[indexFound].quantity * productDetails.price;
-        cart.items[indexFound].price = productDetails.price;
+        cart.items[indexFound].total = cart.items[indexFound].quantity * productDetails.productPrice;
+        cart.items[indexFound].productPrice = productDetails.productPrice;
         cart.subTotal = cart.items.map((item) => item.total).reduce((acc, next) => acc + next);
       }
       // ----Check if quantity is greater than 0 then add item to items array ----
       else if (quantity > 0) {
+        console.log(productDetails);
         cart.items.push({
+          productName: productDetails.productName,
+          image: productDetails.cloudinaryUrl,
           productId,
           quantity,
-          price: productDetails.price,
-          total: parseInt(productDetails.price * quantity, 10),
+          price: productDetails.productPrice,
+          total: parseInt(productDetails.productPrice * quantity, 10),
         });
         cart.subTotal = cart.items.map((item) => item.total).reduce((acc, next) => acc + next);
       }
@@ -131,13 +72,15 @@ exports.addItemToCart = async (req, res) => {
       const cartData = {
         items: [
           {
+            productName: productDetails.productName,
+            image: productDetails.cloudinaryUrl,
             productId,
             quantity,
-            total: parseInt(productDetails.price * quantity, 10),
-            price: productDetails.price,
+            total: parseInt(productDetails.productPrice * quantity, 10),
+            price: productDetails.productPrice,
           },
         ],
-        subTotal: parseInt(productDetails.price * quantity, 10),
+        subTotal: parseInt(productDetails.productPrice * quantity, 10),
       };
       cart = await addItem(cartData);
       // let data = await cart.save();
@@ -230,4 +173,3 @@ exports.emptyCart = async (req, res) => {
     });
   }
 };
-// exports.proceedToCheckout = async (req, res) => {};
