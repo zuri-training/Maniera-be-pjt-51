@@ -20,7 +20,7 @@ const SellerSchema = new mongoose.Schema(
       required: true,
     },
     businessNumber: {
-      type: Number,
+      type: String,
       required: true,
     },
     address: {

@@ -259,27 +259,27 @@ exports.facebookSigninController = async (req, res) => {
       });
       return res.status(200).json({ message: "Login successful" });
     }
-    const password = email + FACEBOOK_AUTH_CLIENT_SECRET;
-    const passwordHash = await bcrypt.hash(password, 12);
-    const newUser = new User({
-      firstName: name.split(" ")[0],
-      lastName: name.split(" ")[1],
-      email,
-      password: passwordHash,
-    });
-    await newUser.save();
-    const payLoad = {
-      user: {
-        id: newUser._id,
-      },
-    };
+    // const password = email + FACEBOOK_AUTH_CLIENT_SECRET;
+    // const passwordHash = await bcrypt.hash(password, 12);
+    // const newUser = new User({
+    //   firstName: name.split(" ")[0],
+    //   lastName: name.split(" ")[1],
+    //   email,
+    //   password: passwordHash,
+    // });
+    // await newUser.save();
+    // const payLoad = {
+    //   user: {
+    //     id: newUser._id,
+    //   },
+    // };
     // create token
-    const refresh_token = jwt.sign(payLoad, accessToken, { expiresIn: TOKEN_EXPIRY });
-    res.cookie("sessionToken", refresh_token, {
-      httpOnly: true,
-      maxAge: 2 * 24 * 60 * 60 * 1000,
-    });
-    res.status(200).json({ message: "Account creation successful, you have been logged in" });
+    // const refresh_token = jwt.sign(payLoad, accessToken, { expiresIn: TOKEN_EXPIRY });
+    // res.cookie("sessionToken", refresh_token, {
+    //   httpOnly: true,
+    //   maxAge: 2 * 24 * 60 * 60 * 1000,
+    // });
+    // res.status(200).json({ message: "Account creation successful, you have been logged in" });
   } catch (error) {
     console.log(error);
   }

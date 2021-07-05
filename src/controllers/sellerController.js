@@ -12,14 +12,36 @@ const { ObjectId } = mongoose.Types;
  */
 exports.registerSeller = async (req, res) => {
   try {
-    const { email } = req.body;
+    const {
+      email,
+      firstName,
+      lastName,
+      phoneNumber,
+      businessName,
+      businessNumber,
+      address,
+      country,
+      businessScale,
+      password,
+    } = req.body;
 
     // check if user exists
     const user = await Seller.findOne({ email });
     if (user) return res.status(400).json({ error: "Email already exists" });
 
     // saved to the database
-    const newUser = await Seller.create({ ...req.body });
+    const newUser = await Seller.create({
+      email,
+      firstName,
+      lastName,
+      phoneNumber,
+      businessNumber,
+      businessName,
+      address,
+      country,
+      businessScale,
+      password,
+    });
 
     // assign id to ref
     const seller = ObjectId(newUser._id);
