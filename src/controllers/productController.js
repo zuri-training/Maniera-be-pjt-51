@@ -1,5 +1,6 @@
-const Product = require("../models/Product");
 const cloudinary = require("../utils/cloudinary");
+
+const Product = require("../models/Product");
 
 /**
  * @method POST
