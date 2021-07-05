@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./routes/authroute");
 const sellerRoutes = require("./routes/sellerRoute");
+const requestRoutes = require("./routes/sellerRoute");
 const cartRoute = require("./routes/cartRoute");
 const productRoutes = require("./routes/productRoute");
 
@@ -29,8 +30,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", cartRoute);
 app.use("/api/auth", sellerRoutes);
+
+app.use("/api/", requestRoutes);
 app.use("/api/auth", productRoutes);
-app.use(cookieParser());
 
 app.use("/", (req, res) => {
   res.status(200).json({
