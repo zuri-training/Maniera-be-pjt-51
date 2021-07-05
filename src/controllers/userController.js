@@ -235,54 +235,54 @@ exports.googleSigninController = async (req, res) => {
  * @desc signs in and sign up a user using facebook account
  */
 exports.facebookSigninController = async (req, res) => {
-  try {
-    const { accessToken, userID } = req.body;
+  // try {
+  //   const { accessToken, userID } = req.body;
 
-    const response = await axios(
-      `https://graph.facebook.com/v11.0/me?access_token=${accessToken}&method=get&pretty=0&sdk=joey&suppress_http_code=1`,
-    );
-    const result = await response.data;
-    console.log(result);
-    if (result.id !== userID) return res.status(401).json({ error: "Unauthorized!!!" });
-    const user = await User.findOne({ email });
-    if (user) {
-      const payLoad = {
-        user: {
-          id: user._id,
-        },
-      };
-      // create token
-      const refresh_token = jwt.sign(payLoad, accessToken, { expiresIn: TOKEN_EXPIRY });
-      res.cookie("sessionToken", refresh_token, {
-        httpOnly: true,
-        maxAge: 2 * 24 * 60 * 60 * 1000,
-      });
-      return res.status(200).json({ message: "Login successful" });
-    }
-    // const password = email + FACEBOOK_AUTH_CLIENT_SECRET;
-    // const passwordHash = await bcrypt.hash(password, 12);
-    // const newUser = new User({
-    //   firstName: name.split(" ")[0],
-    //   lastName: name.split(" ")[1],
-    //   email,
-    //   password: passwordHash,
-    // });
-    // await newUser.save();
-    // const payLoad = {
-    //   user: {
-    //     id: newUser._id,
-    //   },
-    // };
-    // create token
-    // const refresh_token = jwt.sign(payLoad, accessToken, { expiresIn: TOKEN_EXPIRY });
-    // res.cookie("sessionToken", refresh_token, {
-    //   httpOnly: true,
-    //   maxAge: 2 * 24 * 60 * 60 * 1000,
-    // });
-    // res.status(200).json({ message: "Account creation successful, you have been logged in" });
-  } catch (error) {
-    console.log(error);
-  }
+  //   const response = await axios(
+  //     `https://graph.facebook.com/v11.0/me?access_token=${accessToken}&method=get&pretty=0&sdk=joey&suppress_http_code=1`,
+  //   );
+  //   const result = await response.data;
+  //   console.log(result);
+  //   if (result.id !== userID) return res.status(401).json({ error: "Unauthorized!!!" });
+  //   const user = await User.findOne({ email });
+  //   if (user) {
+  //     const payLoad = {
+  //       user: {
+  //         id: user._id,
+  //       },
+  //     };
+  //     // create token
+  //     const refresh_token = jwt.sign(payLoad, accessToken, { expiresIn: TOKEN_EXPIRY });
+  //     res.cookie("sessionToken", refresh_token, {
+  //       httpOnly: true,
+  //       maxAge: 2 * 24 * 60 * 60 * 1000,
+  //     });
+  //     return res.status(200).json({ message: "Login successful" });
+  //   }
+  //   // const password = email + FACEBOOK_AUTH_CLIENT_SECRET;
+  //   // const passwordHash = await bcrypt.hash(password, 12);
+  //   // const newUser = new User({
+  //   //   firstName: name.split(" ")[0],
+  //   //   lastName: name.split(" ")[1],
+  //   //   email,
+  //   //   password: passwordHash,
+  //   // });
+  //   // await newUser.save();
+  //   // const payLoad = {
+  //   //   user: {
+  //   //     id: newUser._id,
+  //   //   },
+  //   // };
+  //   // create token
+  //   // const refresh_token = jwt.sign(payLoad, accessToken, { expiresIn: TOKEN_EXPIRY });
+  //   // res.cookie("sessionToken", refresh_token, {
+  //   //   httpOnly: true,
+  //   //   maxAge: 2 * 24 * 60 * 60 * 1000,
+  //   // });
+  //   // res.status(200).json({ message: "Account creation successful, you have been logged in" });
+  // } catch (error) {
+  //   console.log(error);
+  // }
 };
 
 // {"accessToken":"EAAE4WS7u0ngBAGGH5KkEkLW5RW3JdVhfaYVCEZBpTbNFNZC8OpyjjfDZCksnsYvXUTNyhmBZAZANEMNfACWsJbZAjSqDJuNKu77vx8WzmGF08WHegm6RoPwyk7DE8UIoSZCHybDNNNJ8VwzJQGxi6nqN7MU0M9bt0ZBFq3IZBblRJ9vfUb9mEeSJJp8BaAA20EwgZD","userID":"4617343508277064"}
