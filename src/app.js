@@ -4,13 +4,11 @@ const cors = require("cors");
 const app = express();
 const cookieParser = require("cookie-parser");
 
-
 const authRoutes = require("./routes/authroute");
 const sellerRoutes = require("./routes/sellerRoute");
 const requestRoutes = require("./routes/sellerRoute");
 const cartRoute = require("./routes/cartRoute");
 const productRoutes = require("./routes/productRoute");
-
 
 require("dotenv").config();
 

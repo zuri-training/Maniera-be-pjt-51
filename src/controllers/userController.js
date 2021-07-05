@@ -280,7 +280,6 @@ exports.facebookSigninController = async (req, res) => {
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
     res.status(200).json({ message: "Account creation successful, you have been logged in" });
-    
   } catch (error) {
     console.log(error);
   }
