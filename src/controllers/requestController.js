@@ -20,7 +20,11 @@ exports.createRequest = async (req, res) => {
     materialType,
     colour,
     description,
-    address: { houseNumber, streetAddress, city, state, country },
+    houseNumber,
+    streetAddress,
+    city,
+    state,
+    country,
   } = req.body;
   try {
     const currentUser = await User.findById({ _id: user.id });

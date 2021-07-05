@@ -22,7 +22,7 @@ const UserSchema = new Schema(
       required: true,
     },
     seller: {
-      type: mongoose.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Seller",
     },
     resetLink: {
