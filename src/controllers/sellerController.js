@@ -25,7 +25,9 @@ exports.registerSeller = async (req, res) => {
     const seller = ObjectId(newUser._id);
 
     // update the seller from the user model
+
     const realUser = await User.findOne({ email });
+
     realUser.seller = seller;
     realUser.save();
 
