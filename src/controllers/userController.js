@@ -6,7 +6,6 @@
 const bcrypt = require("bcryptjs");
 const _ = require("lodash");
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
 const mailgun = require("mailgun-js");
 const { OAuth2Client } = require("google-auth-library");
 
