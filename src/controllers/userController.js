@@ -12,15 +12,7 @@ const { OAuth2Client } = require("google-auth-library");
 require("dotenv").config();
 const User = require("../models/User");
 
-const {
-  TOKEN_SECRET,
-  TOKEN_EXPIRY,
-  MAILGUN_APIKEY,
-  DOMAIN,
-  GOOGLE_CLIENT_ID,
-  GOOGLE_AUTH_CLIENT_SECRET,
-  FACEBOOK_CLIENT_ID,
-} = process.env;
+const { TOKEN_SECRET, TOKEN_EXPIRY, MAILGUN_APIKEY, DOMAIN, GOOGLE_CLIENT_ID, GOOGLE_AUTH_CLIENT_SECRET } = process.env;
 const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -30,12 +22,11 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
  * @desc registers a new user
  */
 exports.signupController = async (req, res) => {
-  const { email, password, confirmPassword, firstName, lastName } = req.body;
+  const { email, password, firstName, lastName } = req.body;
   try {
     // Check if user exists
     const user = await User.findOne({ email });
     if (user) return res.status(400).json({ error: "Email already exists" });
-    if (password !== confirmPassword) res.json(400).json({ error: "Password mismatch" });
     // create an instance of the user
     const newUser = new User({
       email,
@@ -51,7 +42,7 @@ exports.signupController = async (req, res) => {
     newUser.password = hash;
 
     await newUser.save();
-    return res.status(200).json({ success: "Registeration success. Please signin." });
+    return res.status(200).json({ success: "Registration success. Please signin." });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Server error" });
@@ -64,7 +55,7 @@ exports.signupController = async (req, res) => {
  */
 exports.signinController = async (req, res) => {
   const { email, password } = req.body;
-
+  console.log(email, password);
   try {
     // check if user exists
     const user = await User.findOne({ email });
@@ -84,9 +75,8 @@ exports.signinController = async (req, res) => {
     // create token
     const refresh_token = jwt.sign(payload, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
     res.cookie("sessionToken", refresh_token, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 1 * 60 * 50 * 1000,
-      signed: true,
     });
 
     res.status(200).json({ refresh_token });
@@ -198,7 +188,7 @@ exports.googleSigninController = async (req, res) => {
       // create token
       const refresh_token = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
       res.cookie("sessionToken", refresh_token, {
-        httpOnly: true,
+        httpOnly: false,
         maxAge: 2 * 24 * 60 * 60 * 1000,
       });
       return res.status(200).json({ message: "Login successful" });
@@ -220,7 +210,7 @@ exports.googleSigninController = async (req, res) => {
     // create token
     const refresh_token = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
     res.cookie("sessionToken", refresh_token, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
     res.status(200).json({ message: "Account creation successful, you have been logged in" });
@@ -234,6 +224,7 @@ exports.googleSigninController = async (req, res) => {
  * @desc signs in and sign up a user using facebook account
  */
 exports.facebookSigninController = async (req, res) => {
+  console.log(req.body);
   // try {
   //   const { accessToken, userID } = req.body;
 

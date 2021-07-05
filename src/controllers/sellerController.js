@@ -23,6 +23,7 @@ exports.registerSeller = async (req, res) => {
       country,
       businessScale,
       password,
+      clothType,
     } = req.body;
 
     // check if user exists
@@ -41,6 +42,7 @@ exports.registerSeller = async (req, res) => {
       country,
       businessScale,
       password,
+      clothType,
     });
 
     // assign id to ref
