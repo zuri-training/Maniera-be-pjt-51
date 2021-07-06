@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const limitter = require("express-rate-limit");
+const compression = require("compression");
 
 const app = express();
 const cookieParser = require("cookie-parser");
@@ -19,7 +21,20 @@ const dbSetup = require("./database/setup");
 dbSetup();
 
 // middlewares
+//Limiter setup for DDoS prevention
+app.use(
+  limitter({
+    windowMs: 5000,
+    max: 5,
+    message: {
+      code: 429,
+      message: "Too many request",
+    },
+  }),
+);
 
+//Compression
+app.use(compression());
 app.use(cors());
 //app.use(cors({ origin: FRONTEND_DEV_URL, credentials: true }));
 
