@@ -6,22 +6,13 @@
 const bcrypt = require("bcryptjs");
 const _ = require("lodash");
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
 const mailgun = require("mailgun-js");
 const { OAuth2Client } = require("google-auth-library");
 
 require("dotenv").config();
 const User = require("../models/User");
 
-const {
-  TOKEN_SECRET,
-  TOKEN_EXPIRY,
-  MAILGUN_APIKEY,
-  DOMAIN,
-  GOOGLE_CLIENT_ID,
-  GOOGLE_AUTH_CLIENT_SECRET,
-  FACEBOOK_CLIENT_ID,
-} = process.env;
+const { TOKEN_SECRET, TOKEN_EXPIRY, MAILGUN_APIKEY, DOMAIN, GOOGLE_CLIENT_ID, GOOGLE_AUTH_CLIENT_SECRET } = process.env;
 const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -78,12 +69,12 @@ exports.signinController = async (req, res) => {
     const payload = {
       user: {
         id: user._id,
-        role: user.seller,
       },
     };
 
     // create token
     const refresh_token = jwt.sign(payload, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
+    console.log(refresh_token);
     res.cookie("sessionToken", refresh_token, {
       httpOnly: true,
       maxAge: 1 * 60 * 50 * 1000,
@@ -174,10 +165,6 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-/**
- * @method POST
- * @desc signs in and sign up a user using google account
- */
 exports.googleSigninController = async (req, res) => {
   try {
     const { token } = req.body;
@@ -188,6 +175,8 @@ exports.googleSigninController = async (req, res) => {
     });
     const payload = ticket.getPayload();
     const { email_verified, email, given_name, family_name } = payload;
+    const password = email + GOOGLE_AUTH_CLIENT_SECRET;
+    const passwordHash = await bcrypt.hash(password, 12);
     if (!email_verified) return res.status(401).json({ error: "Email verification failed" });
     const user = await User.findOne({ email });
     if (user) {
@@ -204,8 +193,6 @@ exports.googleSigninController = async (req, res) => {
       });
       return res.status(200).json({ message: "Login successful" });
     }
-    const password = email + GOOGLE_AUTH_CLIENT_SECRET;
-    const passwordHash = await bcrypt.hash(password, 12);
     const newUser = new User({
       firstName: given_name,
       lastName: family_name,
@@ -230,60 +217,28 @@ exports.googleSigninController = async (req, res) => {
   }
 };
 
-/**
- * @method POST
- * @desc signs in and sign up a user using facebook account
- */
-exports.facebookSigninController = async (req, res) => {
-  try {
-    const { accessToken, userID } = req.body;
-
-    const response = await axios(
-      `https://graph.facebook.com/v11.0/me?access_token=${accessToken}&method=get&pretty=0&sdk=joey&suppress_http_code=1`,
-    );
-    const result = await response.data;
-    console.log(result);
-    if (result.id !== userID) return res.status(401).json({ error: "Unauthorized!!!" });
-    const user = await User.findOne({ email });
-    if (user) {
-      const payLoad = {
-        user: {
-          id: user._id,
-        },
-      };
-      // create token
-      const refresh_token = jwt.sign(payLoad, accessToken, { expiresIn: TOKEN_EXPIRY });
-      res.cookie("sessionToken", refresh_token, {
-        httpOnly: true,
-        maxAge: 2 * 24 * 60 * 60 * 1000,
+exports.auth = async (req, res, next) => {
+  const token = req.cookies.auth;
+  User.findByToken(token, (err, user) => {
+    if (err) throw err;
+    if (!user)
+      return res.json({
+        error: true,
       });
-      return res.status(200).json({ message: "Login successful" });
-    }
-    const password = email + FACEBOOK_AUTH_CLIENT_SECRET;
-    const passwordHash = await bcrypt.hash(password, 12);
-    const newUser = new User({
-      firstName: name.split(" ")[0],
-      lastName: name.split(" ")[1],
-      email,
-      password: passwordHash,
-    });
-    await newUser.save();
-    const payLoad = {
-      user: {
-        id: newUser._id,
-      },
-    };
-    // create token
-    const refresh_token = jwt.sign(payLoad, accessToken, { expiresIn: TOKEN_EXPIRY });
-    res.cookie("sessionToken", refresh_token, {
-      httpOnly: true,
-      maxAge: 2 * 24 * 60 * 60 * 1000,
-    });
-    res.status(200).json({ message: "Account creation successful, you have been logged in" });
-    
-  } catch (error) {
-    console.log(error);
-  }
+
+    req.token = token;
+    req.user = user;
+    next();
+  });
 };
 
-// {"accessToken":"EAAE4WS7u0ngBAGGH5KkEkLW5RW3JdVhfaYVCEZBpTbNFNZC8OpyjjfDZCksnsYvXUTNyhmBZAZANEMNfACWsJbZAjSqDJuNKu77vx8WzmGF08WHegm6RoPwyk7DE8UIoSZCHybDNNNJ8VwzJQGxi6nqN7MU0M9bt0ZBFq3IZBblRJ9vfUb9mEeSJJp8BaAA20EwgZD","userID":"4617343508277064"}
+exports.logout = async (req, res) => {
+  try {
+    req.user.deleteToken(req.token, (err, user) => {
+      if (err) return res.status(400).send(err);
+      res.sendStatus(200).json({ message: "Logout successful" });
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Unable to log out" });
+  }
+};

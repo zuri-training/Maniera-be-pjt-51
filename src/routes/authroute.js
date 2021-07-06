@@ -7,15 +7,16 @@ const {
   forgotPassword,
   resetPassword,
   googleSigninController,
-  facebookSigninController,
+  logout,
+  auth,
 } = require("../controllers/userController");
 const { signupValidator, signinValidator, validatorResults } = require("../middlewares/validator");
 
 router.post("/signup", signupValidator, validatorResults, signupController);
 router.post("/signin", signinValidator, validatorResults, signinController);
 router.post("/google-signin", googleSigninController);
-router.post("/facebook-signin", facebookSigninController);
 router.put("/forgot-password", forgotPassword);
 router.put("/reset-password", resetPassword);
+router.get("/logout", auth, logout);
 
 module.exports = router;
