@@ -9,7 +9,12 @@ const User = require("../models/User");
 
 const cloudinary = require("../utils/cloudinary");
 
-const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
+// const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
+
+/**
+ * @method POST
+ * @desc create a new request
+ */
 
 exports.createRequest = async (req, res) => {
   const { user } = req;
@@ -52,29 +57,37 @@ exports.createRequest = async (req, res) => {
       imageUrl: result.secure_url,
     });
     await ticket.save();
-    const product = await Product.findById({ _id: req.params.id });
-    if (!product) return res.status(200).json({});
-    const sellerEmail = await product.email;
-    const data = {
-      from: ticket.email,
-      to: sellerEmail,
-      subject: "Design Request",
-      html: `
-          <h2>Hello Manieranite, You currently have a new design request awaiting your approval. Kindly login to your <a href="https://maniera-app-url/login">dashboard</a> for necessary action.</h2>
-          <a>With Maniera 
-    `,
-    };
-    mg.messages().send(data, function (error) {
-      console.log(error);
-      if (error) {
-        return res.json({
-          error: err.message,
-        });
-      }
-      return res.json({ message: "Email has been sent, kindly follow the instructions" });
-    });
+    // const product = await Product.findById({ _id: req.params.id });
+    // if (!product) return res.status(200).json({});
+    // const sellerEmail = await product.email;
+    // const data = {
+    //   from: ticket.email,
+    //   to: sellerEmail,
+    //   subject: "Design Request",
+    //   html: `
+    //       <h2>Hello Manieranite, You currently have a new design request awaiting your approval. Kindly login to your <a href="https://maniera-app-url/login">dashboard</a> for necessary action.</h2>
+    //       <a>With Maniera 
+    // `,
+    // };
+    // mg.messages().send(data, function (error) {
+    //   console.log(error);
+    //   if (error) {
+    //     return res.json({
+    //       error: err.message,
+    //     });
+    //   }
+    // return res.json({ message: "Email has been sent, kindly follow the instructions" });
+    // });
     res.status(200).json({ message: "Request successfully sent", ticket });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ status: "error", error });
   }
 };
+
+/**
+ * @method GET
+ * @desc get a single request
+ */
+exports.getRequest = async (req, res) => {
+  const { user } = req;
+}

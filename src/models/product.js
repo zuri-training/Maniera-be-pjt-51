@@ -22,7 +22,6 @@ const productSchema = new Schema(
     productCategory: {
       type: ObjectId,
       ref: "Category",
-      required: true,
     },
     productColour: {
       type: String,

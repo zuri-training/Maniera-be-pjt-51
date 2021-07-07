@@ -38,7 +38,7 @@ exports.create = async (req, res) => {
       productMessage,
       productStar,
       cloudinaryId: result.public_id,
-      cloudinaryUrl: result.url,
+      cloudinaryUrl: result.secure_url,
     });
 
     await product.save();

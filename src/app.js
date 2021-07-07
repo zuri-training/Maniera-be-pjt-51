@@ -51,7 +51,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/auth", cartRoute);
 app.use("/api/auth", sellerRoutes);
 
-app.use("/api", requestRoutes);
+app.use("/api/auth", requestRoutes);
 app.use("/api/auth", productRoutes);
 
 app.use("/", (req, res) => {
