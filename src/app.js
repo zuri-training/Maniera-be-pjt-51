@@ -34,7 +34,12 @@ app.use(
 );
 
 //Compression
-app.use(compression());
+app.use(
+  compression({
+    level: 6,
+    threshold: 0,
+  }),
+);
 app.use(cors());
 //app.use(cors({ origin: FRONTEND_DEV_URL, credentials: true }));
 
