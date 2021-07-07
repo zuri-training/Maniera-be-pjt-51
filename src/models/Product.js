@@ -8,6 +8,10 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
+    productOwner: {
+      type: String,
+      required: true,
+    },
     productDescription: {
       type: String,
       trim: true,
