@@ -7,8 +7,10 @@ const productSchema = new Schema(
     productName: {
       type: String,
       required: true,
-      trim: true,
-      maxLength: 60,
+    },
+    productOwner: {
+      type: String,
+      required: true,
     },
     productDescription: {
       type: String,

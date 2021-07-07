@@ -7,8 +7,10 @@ const productSchema = new Schema(
     productName: {
       type: String,
       required: true,
-      trim: true,
-      maxLength: 60,
+    },
+    productOwner: {
+      type: String,
+      required: true,
     },
     productDescription: {
       type: String,
@@ -55,6 +57,4 @@ const productSchema = new Schema(
   { timestamps: true },
 );
 
-
 module.exports = mongoose.model("product", productSchema);
-
