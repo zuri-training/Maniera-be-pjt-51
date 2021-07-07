@@ -66,7 +66,7 @@ exports.createRequest = async (req, res) => {
     //   subject: "Design Request",
     //   html: `
     //       <h2>Hello Manieranite, You currently have a new design request awaiting your approval. Kindly login to your <a href="https://maniera-app-url/login">dashboard</a> for necessary action.</h2>
-    //       <a>With Maniera 
+    //       <a>With Maniera
     // `,
     // };
     // mg.messages().send(data, function (error) {
@@ -90,4 +90,4 @@ exports.createRequest = async (req, res) => {
  */
 exports.getRequest = async (req, res) => {
   const { user } = req;
-}
+};
