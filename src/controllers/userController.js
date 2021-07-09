@@ -75,8 +75,9 @@ exports.signinController = async (req, res) => {
     // create token
     const refresh_token = jwt.sign(payload, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
     res.cookie("sessionToken", refresh_token, {
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 1 * 60 * 50 * 1000,
+      secure: true,
     });
 
     res.status(200).json({ refresh_token });
@@ -188,8 +189,9 @@ exports.googleSigninController = async (req, res) => {
       // create token
       const refresh_token = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
       res.cookie("sessionToken", refresh_token, {
-        httpOnly: false,
+        httpOnly: true,
         maxAge: 2 * 24 * 60 * 60 * 1000,
+        secure: true,
       });
       return res.status(200).json({ message: "Login successful" });
     }
@@ -210,8 +212,9 @@ exports.googleSigninController = async (req, res) => {
     // create token
     const refresh_token = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
     res.cookie("sessionToken", refresh_token, {
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 2 * 24 * 60 * 60 * 1000,
+      secure: true,
     });
     res.status(200).json({ message: "Account creation successful, you have been logged in" });
   } catch (error) {
