@@ -32,7 +32,7 @@ const productSchema = new Schema(
     productRequest: {
       type: String,
       enum: ["Available", "Non-available"],
-      required: true,
+      default: "Available",
     },
     productType: {
       type: String,

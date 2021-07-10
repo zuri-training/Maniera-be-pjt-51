@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const Seller = require("../models/Seller");
 const User = require("../models/User");
 
@@ -31,7 +32,7 @@ exports.registerSeller = async (req, res) => {
     if (user) return res.status(400).json({ error: "Email already exists" });
 
     // saved to the database
-    const newUser = await Seller.create({
+    const newUser = new Seller({
       email,
       firstName,
       lastName,
@@ -41,21 +42,20 @@ exports.registerSeller = async (req, res) => {
       address,
       country,
       businessScale,
-      password,
       clothType,
     });
-
     // assign id to ref
     const seller = ObjectId(newUser._id);
-
     // update the seller from the user model
 
     const realUser = await User.findOne({ email });
-
+    newUser.password = realUser.password;
+    realUser.role.push("Designer");
     realUser.seller = seller;
-    realUser.save();
+    await realUser.save();
+    await newUser.save();
 
-    res.status(200).json({ realUser, message: "Seller account successfully created" });
+    res.status(200).json({ newUser, message: "Seller account successfully created" });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }

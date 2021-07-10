@@ -20,12 +20,8 @@ exports.create = async (req, res) => {
     productStar,
   } = req.body;
 
-  console.log(req.file);
-
   try {
     const result = await cloudinary.uploader.upload(req.file.path);
-    console.log(result);
-
     const product = new Product({
       productName,
       productDescription,
@@ -39,17 +35,16 @@ exports.create = async (req, res) => {
       productStar,
       cloudinaryId: result.public_id,
       cloudinaryUrl: result.secure_url,
-    });
+    }).populate({ path: "sellerId", model: "Seller" });
 
     await product.save();
 
     res.status(200).json({
-      successMessage: `${productName} was created`,
+      message: `${productName} was created`,
       product,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ errorMessage: "Please try again later" });
+    res.status(500).json({ error: "Please try again later" });
   }
 };
 
@@ -68,7 +63,6 @@ exports.readAll = async (req, res) => {
       products,
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ errorMessage: "Please try again later" });
   }
 };
@@ -81,14 +75,13 @@ exports.readProduct = async (req, res) => {
   const { productId } = req.params;
 
   try {
-    const product = await Product.findOne(productId).populate({ path: "sellerId", model: "Seller" });
+    const product = await Product.findOne({ _id: productId }).populate({ path: "sellerId", model: "Seller" });
 
     res.status(200).json({
       product,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ errorMessage: "Please try again later" });
+    res.status(500).json({ error: "Please try again later" });
   }
 };
 
@@ -100,17 +93,15 @@ exports.delete = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    const product = await Product.findById(productId);
+    const product = await Product.findById({ _id: productId });
     const deletedProduct = await Product.findByIdAndDelete(productId);
-
-    await cloudinary.uploader.destroy(product.cloudinary_id);
+    await cloudinary.uploader.destroy({ public_id: product.cloudinaryId });
 
     res.status(200).json({
-      deletedProduct,
+      message: "Product successfully deleted",
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ errorMessage: "Please try again later" });
+    res.status(500).json({ error: "Please try again later" });
   }
 };
 
