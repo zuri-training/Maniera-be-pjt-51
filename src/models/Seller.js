@@ -20,7 +20,7 @@ const SellerSchema = new mongoose.Schema(
       required: true,
     },
     businessNumber: {
-      type: Number,
+      type: String,
       required: true,
     },
     address: {
@@ -31,11 +31,11 @@ const SellerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    buisnessName: {
-      type: Number,
+    businessName: {
+      type: String,
       required: true,
     },
-    buisnessScale: {
+    businessScale: {
       type: String,
       required: true,
       enum: ["Just me", "Small scale", "Large scale", "Medium scale"],

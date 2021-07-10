@@ -37,26 +37,29 @@ Launch Postman
 
 ```Postman
 
-  Use the API reference below to test the various endpoints in Postman: 
- ```
+  Use the API reference below to test the various endpoints in Postman:
+```
+
 <h2>Add item to cart</h2>
 
- 
- Endpoint:  ```https://maniera-dev.herokuapp.com/api/auth/add-to-cart```
- 
- Method: ```POST```
- 
- URL Params: None
+Endpoint: `https://maniera-dev.herokuapp.com/api/auth/add-to-cart`
+
+Method: `POST`
+
+URL Params: None
+
 ```sh
 Data Params: {
-    
+
   productId: "60d8890484d6151e84910250",
   quantity: 20
 
 }
 ```
+
 > Success Response
-   200 status code
+> 200 status code
+
 ```sh
 {
     "type": "success",
@@ -83,16 +86,20 @@ Data Params: {
     }
 }
 ```
+
 > Error Response
+
      400 Status code
+
 ```
 {
 type: "Invalid",
 msg: "Something Went Wrong",
 }
 ```
-    
+
 > 500 Status code
+
 ```
 {
  type: "Not Found",
@@ -139,11 +146,12 @@ msg: "Bad Request",
 ```
 > 500 Status code
 
-``` {
+```{
  type: "Not Found",
  msg: "Internal server error",
 }
 ```
+
 <h2>Empty Cart</h2>
  
  Endpoint:  ```https://maniera-dev.herokuapp.com/api/auth/empty-cart```
@@ -181,7 +189,7 @@ msg: "Something went wrong",
 ```
 > 500 Status code
 
-``` {
+```{
  type: "Not Found",
  msg: "Internal server error",
 }

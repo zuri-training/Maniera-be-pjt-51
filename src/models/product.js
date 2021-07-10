@@ -1,18 +1,60 @@
 const mongoose = require("mongoose");
 
-const productSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please include the product name"],
+const { Schema } = mongoose;
+const { ObjectId } = mongoose.Schema.Types;
+
+const productSchema = new Schema(
+  {
+    productName: {
+      type: String,
+      required: true,
+    },
+    productDescription: {
+      type: String,
+      trim: true,
+    },
+    productPrice: {
+      type: Number,
+      required: true,
+    },
+    productCategory: {
+      type: [String],
+    },
+    productStar: {
+      type: [Number],
+      max: 10,
+      min: 1,
+    },
+    productColour: {
+      type: String,
+      required: true,
+    },
+    productRequest: {
+      type: String,
+      enum: ["Available", "Non-available"],
+      default: "Available",
+    },
+    productType: {
+      type: String,
+      required: true,
+    },
+    productMessage: {
+      type: String,
+    },
+    sellerId: {
+      type: ObjectId,
+      ref: "Seller",
+    },
+    cloudinaryId: {
+      type: String,
+      required: true,
+    },
+    cloudinaryUrl: {
+      type: String,
+      required: true,
+    },
   },
-  price: {
-    type: String,
-    required: [true, "Please include the product price"],
-  },
-  image: {
-    type: String,
-    required: true,
-  },
-});
-const Product = mongoose.model("Product", productSchema);
-module.exports = Product;
+  { timestamps: true },
+);
+
+module.exports = mongoose.model("product", productSchema);
