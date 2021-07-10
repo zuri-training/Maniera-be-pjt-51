@@ -71,6 +71,7 @@ exports.signinController = async (req, res) => {
         id: user._id,
         role: user.role,
         name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
       },
     };
 
@@ -183,6 +184,7 @@ exports.googleSigninController = async (req, res) => {
           id: user._id,
           role: user.role,
           name: `${user.firstName} ${user.lastName}`,
+          email: user.email,
         },
       };
       // create token
@@ -203,6 +205,7 @@ exports.googleSigninController = async (req, res) => {
         id: newUser._id,
         role: newUser.role,
         name: `${newUser.firstName} ${newUser.lastName}`,
+        email: user.email,
       },
     };
     // create token
