@@ -21,6 +21,10 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    role: {
+      type: [String],
+      default: ["Customer"],
+    },
     seller: {
       type: Schema.Types.ObjectId,
       ref: "Seller",

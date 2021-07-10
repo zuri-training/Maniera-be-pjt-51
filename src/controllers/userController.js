@@ -42,6 +42,7 @@ exports.signupController = async (req, res) => {
     newUser.password = hash;
 
     await newUser.save();
+
     return res.status(200).json({ success: "Registration success. Please signin." });
   } catch (err) {
     console.log(err);
@@ -68,19 +69,15 @@ exports.signinController = async (req, res) => {
     const payload = {
       user: {
         id: user._id,
-        role: user.seller,
+        role: user.role,
+        name: `${user.firstName} ${user.lastName}`,
       },
     };
 
     // create token
-    const refresh_token = jwt.sign(payload, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
-    res.cookie("sessionToken", refresh_token, {
-      httpOnly: true,
-      maxAge: 1 * 60 * 50 * 1000,
-      secure: true,
-    });
+    const token = jwt.sign(payload, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
 
-    res.status(200).json({ refresh_token });
+    res.status(200).json({ token });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
@@ -184,16 +181,13 @@ exports.googleSigninController = async (req, res) => {
       const payLoad = {
         user: {
           id: user._id,
+          role: user.role,
+          name: `${user.firstName} ${user.lastName}`,
         },
       };
       // create token
-      const refresh_token = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
-      res.cookie("sessionToken", refresh_token, {
-        httpOnly: true,
-        maxAge: 2 * 24 * 60 * 60 * 1000,
-        secure: true,
-      });
-      return res.status(200).json({ message: "Login successful" });
+      const signedToken = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
+      return res.status(200).json({ message: "Login successful", signedToken });
     }
     const password = email + GOOGLE_AUTH_CLIENT_SECRET;
     const passwordHash = await bcrypt.hash(password, 12);
@@ -207,16 +201,13 @@ exports.googleSigninController = async (req, res) => {
     const payLoad = {
       user: {
         id: newUser._id,
+        role: newUser.role,
+        name: `${newUser.firstName} ${newUser.lastName}`,
       },
     };
     // create token
-    const refresh_token = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
-    res.cookie("sessionToken", refresh_token, {
-      httpOnly: true,
-      maxAge: 2 * 24 * 60 * 60 * 1000,
-      secure: true,
-    });
-    res.status(200).json({ message: "Account creation successful, you have been logged in" });
+    const signedToken = jwt.sign(payLoad, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRY });
+    res.status(200).json({ message: "Account creation successful, you have been logged in", signedToken });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }

@@ -1,5 +1,5 @@
 const express = require("express");
-//const cors = require("cors");
+// const cors = require("cors");
 const limitter = require("express-rate-limit");
 const compression = require("compression");
 
@@ -16,19 +16,22 @@ require("dotenv").config();
 
 const dbSetup = require("./database/setup");
 
-//const { FRONTEND_DEV_URL } = process.env;
+// const { FRONTEND_DEV_URL } = process.env;
 
 dbSetup();
 
 // middlewares
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorizarion');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorizarion",
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
 
-//Limiter setup for DDoS prevention
+// Limiter setup for DDoS prevention
 app.use(
   limitter({
     windowMs: 5000,
@@ -40,7 +43,7 @@ app.use(
   }),
 );
 
-//Compression
+// Compression
 app.use(
   compression({
     level: 6,
@@ -48,8 +51,8 @@ app.use(
   }),
 );
 
-//app.use(cors());
-//app.use(cors({ origin: FRONTEND_DEV_URL, credentials: true }));
+// app.use(cors());
+// app.use(cors({ origin: FRONTEND_DEV_URL, credentials: true }));
 
 app.use(express.json());
 app.use(cookieParser());

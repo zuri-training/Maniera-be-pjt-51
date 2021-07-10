@@ -60,8 +60,8 @@ exports.create = async (req, res) => {
 exports.readAll = async (req, res) => {
   try {
     const products = await Product.find({}).populate({
-      path: "productCategory",
-      model: "category",
+      path: "sellerId",
+      model: "Seller",
     });
 
     res.status(200).json({
@@ -81,7 +81,7 @@ exports.readProduct = async (req, res) => {
   const { productId } = req.params;
 
   try {
-    const product = await Product.findOne(productId).populate({ path: "productCategory", model: "category" });
+    const product = await Product.findOne(productId).populate({ path: "sellerId", model: "Seller" });
 
     res.status(200).json({
       product,
@@ -153,7 +153,7 @@ exports.update = async (req, res) => {
       productMessage,
       productStar,
       cloudinaryId: result.public_id,
-      cloudinaryUrl: result.url,
+      cloudinaryUrl: result.secure_url,
     });
 
     product = await Product.findByIdAndUpdate(productId, newProduct);

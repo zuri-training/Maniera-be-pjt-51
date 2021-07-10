@@ -7,10 +7,10 @@ require("dotenv").config();
 const { TOKEN_SECRET } = process.env;
 
 exports.authenticateJWT = (req, res, next) => {
-  const { sessionToken } = req.cookies;
-  if (!sessionToken) return res.status(401).json({ error: "Authorization denied" });
   try {
-    const decoded = jwt.verify(sessionToken, TOKEN_SECRET);
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) return res.status(401).json({ error: "Invalid token" });
+    const decoded = jwt.verify(token, TOKEN_SECRET);
     // check if decoded
     if (!decoded) return res.status(401).json({ error: "Authorization denied" });
     req.user = decoded.user;
