@@ -22,4 +22,3 @@ exports.sendEmail = async (option) => {
   };
   await transporter.sendMail(mailOptions);
 };
-
