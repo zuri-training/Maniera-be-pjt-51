@@ -7,7 +7,6 @@ const RequestSchema = new Schema(
     fullName: {
       type: String,
       required: true,
-      lowercase: true,
       trim: true,
     },
     email: {
@@ -18,7 +17,6 @@ const RequestSchema = new Schema(
     },
     gender: {
       type: String,
-      lowercase: true,
       required: true,
     },
     phoneNumber: {
@@ -55,13 +53,12 @@ const RequestSchema = new Schema(
       type: String,
     },
     address: {
-      houseNumber: {
+      houseAddress: {
         type: String,
         required: true,
       },
       streetAddress: {
         type: String,
-        required: true,
       },
       city: {
         type: String,
@@ -69,11 +66,6 @@ const RequestSchema = new Schema(
       },
       state: {
         type: String,
-        required: true,
-      },
-      country: {
-        type: String,
-        required: true,
       },
     },
   },

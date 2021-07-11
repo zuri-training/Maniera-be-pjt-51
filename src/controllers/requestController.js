@@ -2,14 +2,21 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 const mongoose = require("mongoose");
-const mailgun = require("mailgun");
+const mailgun = require("mailgun-js");
 
 const Request = require("../models/Request");
+const Product = require("../models/product");
+const Seller = require("../models/Seller");
 const User = require("../models/User");
 
 const cloudinary = require("../utils/cloudinary");
+require("dotenv").config();
 
- const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
+const { sendEmail } = require("../utils/emailSender");
+
+const { MAILGUN_APIKEY, DOMAIN } = process.env;
+
+const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
 
 /**
  * @method POST
@@ -20,27 +27,26 @@ exports.createRequest = async (req, res) => {
   const { user } = req;
   console.log(user);
   const {
+    fullName,
+    email,
     gender,
     phoneNumber,
     clothingType,
     materialType,
     colour,
     description,
-    houseNumber,
+    houseAddress,
     streetAddress,
     city,
     state,
-    country,
   } = req.body;
   try {
     const currentUser = await User.findById({ _id: user.id });
     if (!currentUser) return res.status(401).json({ error: "User does not exist" });
-    console.log(currentUser.email);
-    const request = await Request.findById({ id: user.id });
     const result = await cloudinary.uploader.upload(req.file.path);
     const ticket = new Request({
-      fullName: `${currentUser.firstName} ${currentUser.lastName}`,
-      email: currentUser.email,
+      fullName,
+      email,
       gender,
       phoneNumber,
       clothingType,
@@ -48,37 +54,32 @@ exports.createRequest = async (req, res) => {
       colour,
       description,
       address: {
-        houseNumber,
+        houseAddress,
         streetAddress,
         city,
         state,
-        country,
       },
       cloudinaryId: result.public_id,
       imageUrl: result.secure_url,
     });
+    const product = await Product.findById({ _id: req.params.id });
+    if (!product) return res.status(200).json({});
+    const seller = await Seller.findById({ _id: product.sellerId });
+    const sellerEmail = await seller.email;
+    const data = {
+      from: ticket.email,
+      to: sellerEmail,
+      subject: "Design Request",
+      html: `
+      <h2>Hello ${seller.firstName} ${seller.lastName}, 
+      You currently have a new design request awaiting your approval. Kindly login to your <a href="https://maniera-beta-testing.netlify.app/html/sign-in.html">dashboard</a> for necessary actions.</h2>
+
+      <p>Regards</p>
+      <p>With love from <a href="https://maniera-beta-testing.netlify.app">Maniera</a></p>
+      `,
+    };
     await ticket.save();
-    // const product = await Product.findById({ _id: req.params.id });
-    // if (!product) return res.status(200).json({});
-    // const sellerEmail = await product.email;
-    // const data = {
-    //   from: ticket.email,
-    //   to: sellerEmail,
-    //   subject: "Design Request",
-    //   html: `
-    //       <h2>Hello Manieranite, You currently have a new design request awaiting your approval. Kindly login to your <a href="https://maniera-app-url/login">dashboard</a> for necessary action.</h2>
-    //       <a>With Maniera
-    // `,
-    // };
-    // mg.messages().send(data, function (error) {
-    //   console.log(error);
-    //   if (error) {
-    //     return res.json({
-    //       error: err.message,
-    //     });
-    //   }
-    // return res.json({ message: "Email has been sent, kindly follow the instructions" });
-    // });
+    sendEmail(data);
     res.status(200).json({ message: "Request successfully sent", ticket });
   } catch (error) {
     res.status(500).json({ status: "error", error });
@@ -89,6 +90,13 @@ exports.createRequest = async (req, res) => {
  * @method GET
  * @desc get a single request
  */
-exports.getRequest = async (req, res) => {
-  const { user } = req;
+exports.getRequests = async (req, res) => {
+  try {
+    const { user } = req;
+    const findRequest = await Request.findOne({ email: user.email });
+    if (!findRequest) return res.status(200).json({ message: "You currently don't have a request" });
+    return res.status(200).json({ message: "Success", findRequest });
+  } catch (error) {
+    return res.status(500).json({ error: "Server error" });
+  }
 };
