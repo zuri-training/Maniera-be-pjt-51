@@ -1,7 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 const Seller = require("../models/Seller");
 const User = require("../models/User");
 
@@ -23,7 +22,6 @@ exports.registerSeller = async (req, res) => {
       address,
       country,
       businessScale,
-      password,
       clothType,
     } = req.body;
 

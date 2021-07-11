@@ -2,7 +2,7 @@
 /* eslint-disable func-names */
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
-const Product = require("../models/Product");
+const Product = require("../models/product");
 const productRepository = require("../repo/productRepository");
 const { cartRepo, addItem } = require("../repo/cartRepository");
 
