@@ -123,11 +123,11 @@ exports.update = async (req, res) => {
   } = req.body;
 
   try {
-    const product = await Product.findById({ _id: productId });
+    const product = await Product.findById(productId);
     // delete from cloudinary
     await cloudinary.uploader.destroy(product.cloudinaryId);
     const result = await cloudinary.uploader.upload(req.file.path);
-    const newProduct = new Product({
+    const newProduct = {
       productName,
       productDescription,
       productPrice,
@@ -139,10 +139,11 @@ exports.update = async (req, res) => {
       productSize,
       cloudinaryId: result.public_id,
       cloudinaryUrl: result.secure_url,
-    });
-    await Product.findByIdAndUpdate(productId, newProduct, (err, data) => {
-      if (err) return console.log(err);
-      console.log(data);
+    };
+    console.log(product);
+    await Product.updateOne(product, newProduct, (err, data) => {
+      if (err) return res.status(403).json({ err });
+
     });
     res.status(200).json({ message: "Product successfully updated" });
   } catch (err) {

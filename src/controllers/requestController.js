@@ -9,7 +9,7 @@ const User = require("../models/User");
 
 const cloudinary = require("../utils/cloudinary");
 
-// const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
+ const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
 
 /**
  * @method POST
@@ -18,6 +18,7 @@ const cloudinary = require("../utils/cloudinary");
 
 exports.createRequest = async (req, res) => {
   const { user } = req;
+  console.log(user);
   const {
     gender,
     phoneNumber,
@@ -35,7 +36,7 @@ exports.createRequest = async (req, res) => {
     const currentUser = await User.findById({ _id: user.id });
     if (!currentUser) return res.status(401).json({ error: "User does not exist" });
     console.log(currentUser.email);
-    // const request = await Request.findById({ id: user.id });
+    const request = await Request.findById({ id: user.id });
     const result = await cloudinary.uploader.upload(req.file.path);
     const ticket = new Request({
       fullName: `${currentUser.firstName} ${currentUser.lastName}`,
