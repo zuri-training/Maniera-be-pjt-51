@@ -23,17 +23,3 @@ exports.sendEmail = async (option) => {
   await transporter.sendMail(mailOptions);
 };
 
-exports.sendGridEmail = async () => {};
-
-// transporter.sendMail({
-//     to: email,
-//     from: "psalmueloye@gmail.com",
-//     subject: "Hire Form",
-//     html: `<p>Hi ${email},<br>
-//     Thank you for your interest in me.<br>
-//     I am excited you touched base with me and I can't wait to accomplishing great things with you.<br>
-//     Warm Regards,
-
-//     Samuel Osinloye
-//     </p>`
-// })
