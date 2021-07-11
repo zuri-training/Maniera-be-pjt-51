@@ -10,6 +10,7 @@ module.exports = function () {
       useUnifiedTopology: true,
       useNewUrlParser: true,
       useCreateIndex: true,
+      useFindAndModify: false,
     })
     .then(() => console.log("Successfully connected to MongoDB Atlas"))
     .catch((error) => {

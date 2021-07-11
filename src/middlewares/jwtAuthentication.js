@@ -8,8 +8,8 @@ const { TOKEN_SECRET } = process.env;
 
 exports.authenticateJWT = (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    if (!token) return res.status(401).json({ error: "Invalid token" });
+    const token = req.header("Authorization").split(" ")[1];
+    if (!token) return res.status(401).json({ error: "Invalid authentication" });
     const decoded = jwt.verify(token, TOKEN_SECRET);
     // check if decoded
     if (!decoded) return res.status(401).json({ error: "Authorization denied" });

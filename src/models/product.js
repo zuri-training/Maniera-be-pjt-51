@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
-const { ObjectId } = mongoose.Schema.Types;
 
 const productSchema = new Schema(
   {
@@ -20,6 +19,9 @@ const productSchema = new Schema(
     productCategory: {
       type: [String],
     },
+    productSize: {
+      type: [String],
+    },
     productStar: {
       type: [Number],
       max: 10,
@@ -31,23 +33,18 @@ const productSchema = new Schema(
     },
     productRequest: {
       type: String,
-      enum: ["Available", "Non-available"],
+      enum: ["Available", "Unavailable"],
       default: "Available",
-    },
-    productType: {
-      type: String,
-      required: true,
     },
     productMessage: {
       type: String,
     },
-    sellerId: {
-      type: ObjectId,
-      ref: "Seller",
-    },
     cloudinaryId: {
       type: String,
       required: true,
+    },
+    sellerId: {
+      type: String,
     },
     cloudinaryUrl: {
       type: String,

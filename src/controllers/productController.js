@@ -1,23 +1,25 @@
+/* eslint-disable no-underscore-dangle */
 const cloudinary = require("../utils/cloudinary");
 
 const Product = require("../models/Product");
+const Seller = require("../models/Seller");
 
 /**
  * @method POST
  * @desc creates product
  */
 exports.create = async (req, res) => {
+  console.log(req.user);
   const {
     productName,
     productDescription,
     productPrice,
     productCategory,
-    productQty,
     productColour,
     productRequest,
-    productType,
     productMessage,
     productStar,
+    productSize,
   } = req.body;
 
   try {
@@ -27,18 +29,18 @@ exports.create = async (req, res) => {
       productDescription,
       productPrice,
       productCategory,
-      productQty,
       productColour,
       productRequest,
-      productType,
       productMessage,
       productStar,
+      productSize,
       cloudinaryId: result.public_id,
       cloudinaryUrl: result.secure_url,
-    }).populate({ path: "sellerId", model: "Seller" });
+    });
 
+    const seller = await Seller.findOne({ email: req.user.email });
+    product.sellerId = seller._id;
     await product.save();
-
     res.status(200).json({
       message: `${productName} was created`,
       product,
@@ -54,16 +56,12 @@ exports.create = async (req, res) => {
  */
 exports.readAll = async (req, res) => {
   try {
-    const products = await Product.find({}).populate({
-      path: "sellerId",
-      model: "Seller",
-    });
-
+    const products = await Product.find({});
     res.status(200).json({
       products,
     });
   } catch (err) {
-    res.status(500).json({ errorMessage: "Please try again later" });
+    res.status(500).json({ error: "Please try again later" });
   }
 };
 
@@ -75,7 +73,7 @@ exports.readProduct = async (req, res) => {
   const { productId } = req.params;
 
   try {
-    const product = await Product.findOne({ _id: productId }).populate({ path: "sellerId", model: "Seller" });
+    const product = await Product.findOne({ _id: productId });
 
     res.status(200).json({
       product,
@@ -111,46 +109,44 @@ exports.delete = async (req, res) => {
  */
 exports.update = async (req, res) => {
   const { productId } = req.params;
-
+  console.log(productId);
   const {
     productName,
     productDescription,
     productPrice,
     productCategory,
-    productQty,
     productColour,
     productRequest,
-    productType,
     productMessage,
     productStar,
+    productSize,
   } = req.body;
 
   try {
-    let product = await Product.findByid(productId);
-
+    const product = await Product.findById(productId);
     // delete from cloudinary
-    await cloudinary.uploader.destroy(product.cloudinary_id);
+    await cloudinary.uploader.destroy(product.cloudinaryId);
     const result = await cloudinary.uploader.upload(req.file.path);
-
-    const newProduct = new Product({
+    const newProduct = {
       productName,
       productDescription,
       productPrice,
       productCategory,
-      productQty,
       productColour,
       productRequest,
-      productType,
       productMessage,
       productStar,
+      productSize,
       cloudinaryId: result.public_id,
       cloudinaryUrl: result.secure_url,
-    });
+    };
+    console.log(product);
+    await Product.updateOne(product, newProduct, (err, data) => {
+      if (err) return res.status(403).json({ err });
 
-    product = await Product.findByIdAndUpdate(productId, newProduct);
-    res.status(200).json({ successMsg: "Product successfully updated" });
+    });
+    res.status(200).json({ message: "Product successfully updated" });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ errorMessage: "Please try again later" });
+    res.status(500).json({ error: "Please try again later" });
   }
 };
