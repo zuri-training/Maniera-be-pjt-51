@@ -1,10 +1,14 @@
 const mongoose = require("mongoose");
-
 const { Schema } = mongoose;
+const { ObjectId } = mongoose.Schema.Types;
 
 const productSchema = new Schema(
   {
     productName: {
+      type: String,
+      required: true,
+    },
+    productOwner: {
       type: String,
       required: true,
     },
@@ -17,15 +21,9 @@ const productSchema = new Schema(
       required: true,
     },
     productCategory: {
-      type: [String],
-    },
-    productSize: {
-      type: [String],
-    },
-    productStar: {
-      type: [Number],
-      max: 10,
-      min: 1,
+      type: ObjectId,
+      ref: "Category",
+      required: true,
     },
     productColour: {
       type: String,
@@ -33,18 +31,23 @@ const productSchema = new Schema(
     },
     productRequest: {
       type: String,
-      enum: ["Available", "Unavailable"],
-      default: "Available",
+      enum: ["Available", "Non-available"],
+      required: true,
+    },
+    productType: {
+      type: String,
+      required: true,
     },
     productMessage: {
       type: String,
     },
+    productStar: {
+      type: Number,
+      required: true,
+    },
     cloudinaryId: {
       type: String,
       required: true,
-    },
-    sellerId: {
-      type: String,
     },
     cloudinaryUrl: {
       type: String,
@@ -54,4 +57,6 @@ const productSchema = new Schema(
   { timestamps: true },
 );
 
-module.exports = mongoose.model("Product", productSchema);
+
+module.exports = mongoose.model("product", productSchema);
+
