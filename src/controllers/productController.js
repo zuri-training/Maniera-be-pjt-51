@@ -10,8 +10,6 @@ const User = require("../models/User");
  * @desc creates product
  */
 exports.create = async (req, res) => {
-  const userRole = await User.findOne({ email: req.user.email });
-  if (!userRole.role.includes("Designer")) return res.status(401).json({ message: "Unauthorized" });
   const {
     productName,
     productDescription,

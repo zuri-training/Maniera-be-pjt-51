@@ -49,6 +49,9 @@ const RequestSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    sellerId: {
+      type: String,
+    },
     comment: {
       type: String,
     },

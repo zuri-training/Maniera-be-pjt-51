@@ -25,7 +25,6 @@ const mg = mailgun({ apiKey: MAILGUN_APIKEY, domain: DOMAIN });
 
 exports.createRequest = async (req, res) => {
   const { user } = req;
-  console.log(user);
   const {
     fullName,
     email,
@@ -63,9 +62,10 @@ exports.createRequest = async (req, res) => {
       imageUrl: result.secure_url,
     });
     const product = await Product.findById({ _id: req.params.id });
-    if (!product) return res.status(200).json({});
+    if (!product) return res.status(400).json({ error: "Unknown request" });
     const seller = await Seller.findById({ _id: product.sellerId });
     const sellerEmail = await seller.email;
+    ticket.sellerId = await seller._id;
     const data = {
       from: ticket.email,
       to: sellerEmail,
@@ -88,15 +88,29 @@ exports.createRequest = async (req, res) => {
 
 /**
  * @method GET
- * @desc get a single request
+ * @desc get all design request
  */
 exports.getRequests = async (req, res) => {
+  const { user } = req;
   try {
-    const { user } = req;
-    const findRequest = await Request.findOne({ email: user.email });
-    if (!findRequest) return res.status(200).json({ message: "You currently don't have a request" });
-    return res.status(200).json({ message: "Success", findRequest });
+    const seller = await Seller.findOne({ email: user.email });
+    const retrieveRequests = await Request.findOne({ sellerId: seller._id });
+    if (!retrieveRequests) return res.status(200).json({ message: "You currently don't have a request" });
+    return res.status(200).json({ message: "Success", retrieveRequests });
   } catch (error) {
     return res.status(500).json({ error: "Server error" });
   }
+};
+
+/**
+ * @method GET
+ * @desc get a single design request
+ */
+exports.getRequest = async (req, res) => {
+  try {
+    const { user } = req;
+    const { id } = req.params;
+    const retrieveRequest = await Request.findById({ _id: id });
+    if (!retrieveRequest) return res.status(404).json({ error: "Request not found" });
+  } catch (error) {}
 };

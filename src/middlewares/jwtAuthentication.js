@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-console */
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
 require("dotenv").config();
 
@@ -40,5 +41,16 @@ exports.authenticateProductJWT = (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ errorMessage: "Server error" });
+  }
+};
+
+exports.roleChecker = async (req, res, next) => {
+  const { user } = req;
+  try {
+    const userRole = await User.findOne({ email: user.email });
+    if (!userRole.role.includes("Designer")) return res.status(401).json({ message: "Unauthorized" });
+    next();
+  } catch (error) {
+    return res.status(500).json({ error: "Server error" });
   }
 };

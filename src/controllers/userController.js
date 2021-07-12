@@ -56,7 +56,6 @@ exports.signupController = async (req, res) => {
  */
 exports.signinController = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
   try {
     // check if user exists
     const user = await User.findOne({ email });
